@@ -1,0 +1,6 @@
+{
+  "name": "openstack",
+  "version": "6.3.0",
+  "iteration": "0",
+  "description": "OpenStack resource adapter"
+}

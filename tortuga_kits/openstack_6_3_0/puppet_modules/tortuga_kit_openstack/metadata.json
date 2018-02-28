@@ -1,0 +1,14 @@
+{
+  "name": "univa/tortuga_kit_openstack",
+  "version": "6.3.0",
+  "author": "Univa Corporation",
+  "summary": "OpenStack Puppet module for Tortuga",
+  "license": "commercial",
+  "source": "Univa",
+  "project_page": "http://univa.com",
+  "issues_url": null,
+  "description": "OpenStack Puppet module for Tortuga",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib"}
+  ]
+}
