@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# == Class: tortuga_kit_openstack::management
+# == Class: rotuga_kit_openstackadapter::management
 #
 # Full description of class tortuga_kit_openstack here.
 #
@@ -50,12 +50,12 @@
 # Copyright 2013 Your name here, unless otherwise noted.
 #
 
-class tortuga_kit_openstack::management::package {
+class rotuga_kit_openstackadapter::management::package {
   require tortuga::packages
 }
 
-class tortuga_kit_openstack::management::post_install {
-  require tortuga_kit_openstack::management::package
+class rotuga_kit_openstackadapter::management::post_install {
+  require rotuga_kit_openstackadapter::management::package
 
   tortuga::run_post_install { "openstack_${compdescr}_post_install":
     kitdescr  => $kitdescr,
@@ -63,17 +63,17 @@ class tortuga_kit_openstack::management::post_install {
     notify    => Class['tortuga_kit_base::installer::webservice::server'],
   }
 }
-class tortuga_kit_openstack::management::config {
+class rotuga_kit_openstackadapter::management::config {
   require tortuga_kit_base::installer::apache
-  require tortuga_kit_openstack::management::post_install
+  require rotuga_kit_openstackadapter::management::post_install
 
   include tortuga::config
 }
 
-class tortuga_kit_openstack::management {
-  contain tortuga_kit_openstack::management::package
-  contain tortuga_kit_openstack::management::post_install
-  contain tortuga_kit_openstack::management::config
+class rotuga_kit_openstackadapter::management {
+  contain rotuga_kit_openstackadapter::management::package
+  contain rotuga_kit_openstackadapter::management::post_install
+  contain rotuga_kit_openstackadapter::management::config
 
-  $compdescr = "management-${tortuga_kit_openstack::config::major_version}"
+  $compdescr = "management-${rotuga_kit_openstackadapter::config::major_version}"
 }

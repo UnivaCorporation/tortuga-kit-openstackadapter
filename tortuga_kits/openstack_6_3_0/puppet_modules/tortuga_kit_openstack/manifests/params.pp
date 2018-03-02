@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-class tortuga_kit_openstack::params {
+class rotuga_kit_openstackadapter::params {
   $major_version = '6.3'
   $version = "${major_version}.0"
 
