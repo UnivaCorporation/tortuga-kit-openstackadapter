@@ -17,6 +17,6 @@ from tortuga.kit.installer import KitInstallerBase
 
 
 class AWSInstaller(ResourceAdapterMixin, KitInstallerBase):
-    puppet_modules = ['tortuga_kit_openstack']
+    puppet_modules = ['univa-tortuga_kit_openstackadapter']
     config_files = ['openstack_bootstrap.py']
     resource_adapter_name = 'openstack'

@@ -1,5 +1,5 @@
 {
-  "name": "univa/tortuga_kit_openstack",
+  "name": "univa-tortuga_kit_openstackadapter",
   "version": "6.3.0",
   "author": "Univa Corporation",
   "summary": "OpenStack Puppet module for Tortuga",
