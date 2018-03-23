@@ -1,4 +1,4 @@
-# tortuga-kit-openstack
+# tortuga-kit-openstackadapter
 
 ## Overview
 
@@ -16,7 +16,7 @@ Be sure you have activated the tortuga virtual environment as suggested in the [
 Install the kit:
 
 ```shell
-install-kit kit-openstack*.tar.bz2
+install-kit kit-openstackadapter*.tar.bz2
 ```
 
 See the [Tortuga Installation and Administration Guide](https://github.com/UnivaCorporation/tortuga/blob/master/doc/tortuga-6-admin-guide.md) for configuration
