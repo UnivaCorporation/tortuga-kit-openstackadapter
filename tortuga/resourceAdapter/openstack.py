@@ -14,32 +14,33 @@
 
 # pylint: disable=no-member
 
-import os.path
 import base64
-import pprint
-import json
-import uuid
-import re
 import itertools
+import json
+import os.path
+import pprint
+import re
 import subprocess
-import urllib.parse
 import threading
-import requests
-from requests.exceptions import Timeout
+import urllib.parse
+import uuid
+
 import gevent
 import gevent.queue
-
-from tortuga.resourceAdapter.resourceAdapter import ResourceAdapter
-from tortuga.exceptions.commandFailed import CommandFailed
-from tortuga.exceptions.configurationError import ConfigurationError
-from tortuga.os_utility import osUtility
-from tortuga.exceptions.invalidArgument import InvalidArgument
+import requests
+from requests.exceptions import Timeout
 from tortuga.db.models.nic import Nic
 from tortuga.db.models.node import Node
-from tortuga.utility.cloudinit import dump_cloud_config_yaml
-from tortuga.resourceAdapter.utility import get_provisioning_nic
-from tortuga.exceptions.resourceNotFound import ResourceNotFound
+from tortuga.exceptions.commandFailed import CommandFailed
+from tortuga.exceptions.configurationError import ConfigurationError
+from tortuga.exceptions.invalidArgument import InvalidArgument
 from tortuga.exceptions.nicNotFound import NicNotFound
+from tortuga.exceptions.resourceNotFound import ResourceNotFound
+from tortuga.os_utility import osUtility
+from tortuga.resourceAdapter.resourceAdapter import ResourceAdapter
+from tortuga.resourceAdapter.utility import get_provisioning_nic
+from tortuga.utility.cloudinit import dump_cloud_config_yaml
+
 
 # Lock used to synchronize access to 'session_floating_ips'
 openstack_lock = threading.RLock()
