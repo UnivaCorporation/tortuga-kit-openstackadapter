@@ -78,7 +78,7 @@ class Openstack(ResourceAdapter):
             Openstack.DEFAULT_INSTANCE_CACHE_CONFIG_FILE)
 
     def __requestErrorHandler(self, response):
-        self.getLogger().debug('[openstack] __requestErrorHandler()')
+        self.getLogger().debug('__requestErrorHandler()')
 
         if response.status_code == 401:
             # Authorization failed, renew credentials
@@ -107,7 +107,7 @@ class Openstack(ResourceAdapter):
                     pass
 
             self.getLogger().debug(
-                '[openstack] __requestErrorHandler(): response=[%s]' % (
+                '__requestErrorHandler(): response=[%s]' % (
                     response.text))
 
             raise OpenStackOperationFailed(
@@ -145,7 +145,7 @@ class Openstack(ResourceAdapter):
                 errmsg = 'Timeout attempting to connect to [%s]' % (
                     '%s://%s' % (u.scheme, u.netloc))
 
-                self.getLogger().error('[openstack] ' + errmsg)
+                self.getLogger().error(errmsg)
 
                 raise CommandFailed(errmsg)
 
@@ -159,7 +159,7 @@ class Openstack(ResourceAdapter):
                     # Authorization required; renew credentials.
 
                     self.getLogger().debug(
-                        '[openstack] __openstack_compute_get_request(): '
+                        '__openstack_compute_get_request(): '
                         ' attempting to renew authentication credentials')
 
                     try:
@@ -174,8 +174,7 @@ class Openstack(ResourceAdapter):
                         # Unable to (re)authenticate using existing
                         # credentials
 
-                        self.getLogger().error(
-                            '[openstack] Unable to (re)authenticate')
+                        self.getLogger().error('Unable to (re)authenticate')
 
                         bAuthAttempted = True
                 else:
@@ -183,7 +182,7 @@ class Openstack(ResourceAdapter):
                     # operation still failed. Bail out...
 
                     self.getLogger().debug(
-                        '[openstack] __openstack_compute_get_request():'
+                        '__openstack_compute_get_request():'
                         ' HTTP status [%s], response=[%s]' % (
                             response.status_code, response.text))
 
@@ -191,7 +190,7 @@ class Openstack(ResourceAdapter):
             else:
                 # Unexpected response status
                 self.getLogger().error(
-                    '[openstack] URL [%s] request failed;'
+                    'URL [%s] request failed;'
                     ' HTTP status [%s]' % (
                         request_url, response.status_code))
 
@@ -225,8 +224,7 @@ class Openstack(ResourceAdapter):
             request_url = session['auth']['compute_url'] + url
 
             self.getLogger().debug(
-                '[openstack] __openstack_compute_put_request():'
-                ' url=[%s]' % (url))
+                '__openstack_compute_put_request(): url=[%s]' % (url))
 
             try:
                 response = requests.put(
@@ -240,7 +238,7 @@ class Openstack(ResourceAdapter):
                 errmsg = 'Timeout attempting to connect to [%s]' % (
                     '%s://%s' % (u.scheme, u.netloc))
 
-                self.getLogger().error('[openstack] ' + errmsg)
+                self.getLogger().error(errmsg)
 
                 raise CommandFailed(errmsg)
 
@@ -260,7 +258,7 @@ class Openstack(ResourceAdapter):
             break
 
         self.getLogger().debug(
-            '[openstack] __openstack_compute_put_request():'
+            '__openstack_compute_put_request():'
             ' HTTP status=[%s]' % (response.status_code))
 
         return response.json()
@@ -282,7 +280,7 @@ class Openstack(ResourceAdapter):
         }
 
         self.getLogger().debug(
-            '[openstack] __openstack_network_get_request(): url=[%s]' % (
+            '__openstack_network_get_request(): url=[%s]' % (
                 session['auth']['network_url'] + url))
 
         request_url = session['auth']['network_url'] + url
@@ -300,13 +298,12 @@ class Openstack(ResourceAdapter):
             errmsg = 'Timeout attempting to connect to [%s]' % (
                 '%s://%s' % (u.scheme, u.netloc))
 
-            self.getLogger().error('[openstack] ' + errmsg)
+            self.getLogger().error(errmsg)
 
             raise CommandFailed(errmsg)
 
         self.getLogger().debug(
-            '[openstack] __openstack_network_get_request(): text=[%s]' % (
-                req.text))
+            '__openstack_network_get_request(): text=[%s]' % (req.text))
 
         return req.json()
 
@@ -362,14 +359,14 @@ class Openstack(ResourceAdapter):
             CommandFailed
         """
 
-        self.getLogger().debug('[openstack] __openstack_get_flavors()')
+        self.getLogger().debug('__openstack_get_flavors()')
 
         get_flavors_response = self.__openstack_compute_get_request(
             session, '/flavors', expected_status=(200, 203))
 
         if 'flavors' not in get_flavors_response:
             self.getLogger().debug(
-                '[openstack] Unable to get list of flavors: [%s]' % (
+                'Unable to get list of flavors: [%s]' % (
                     get_flavors_response))
 
             raise CommandFailed(
@@ -467,14 +464,12 @@ class Openstack(ResourceAdapter):
             errmsg = ('Unable to allocate floating IP'
                       ' (floating IP pool depleted?)')
 
-            self.getLogger().error(
-                '[openstack] ' + errmsg + ' (ex=[%s])' % (ex))
+            self.getLogger().error(errmsg + ' (ex=[%s])' % (ex))
 
             raise CommandFailed(errmsg)
 
         self.getLogger().debug(
-            '[openstack] __openstack_allocate_floating_ip():'
-            ' response=[%s]' % (response))
+            '__openstack_allocate_floating_ip(): response=[%s]' % (response))
 
         return response['floating_ip']
 
@@ -494,7 +489,7 @@ class Openstack(ResourceAdapter):
         if not networks:
             errmsg = 'No tenant network(s) defined!?!?'
 
-            self.getLogger().error('[openstack] %s' % (errmsg))
+            self.getLogger().error(errmsg)
 
             raise CommandFailed(errmsg)
 
@@ -509,7 +504,7 @@ class Openstack(ResourceAdapter):
             OpenstackOperationFailed
         """
 
-        self.getLogger().debug('[openstack] __launchSingleInstance()')
+        self.getLogger().debug('__launchSingleInstance()')
 
         configDict = session['config']
 
@@ -530,7 +525,7 @@ class Openstack(ResourceAdapter):
                     'Multiple isolated networks present, \'networks\''
                     ' must be configured')
 
-                self.getLogger().error('[openstack] %s' % (errmsg))
+                self.getLogger().error(errmsg)
 
                 raise CommandFailed(errmsg)
 
@@ -551,8 +546,7 @@ class Openstack(ResourceAdapter):
                         requested_network_id)
 
                     self.getLogger().error(
-                        '[openstack] %s. Unable to launch instance' % (
-                            errmsg))
+                        '%s. Unable to launch instance' % (errmsg))
 
                     raise CommandFailed(errmsg)
 
@@ -584,11 +578,10 @@ class Openstack(ResourceAdapter):
             create_server_request['server']['user_data'] = \
                 base64.b64encode(user_data)
         else:
-            self.getLogger().debug('[openstack] No user data generated')
+            self.getLogger().debug('No user data generated')
 
         self.getLogger().debug(
-            '[openstack] __launchSingleInstance(): Prior to creating an'
-            ' instance')
+            '__launchSingleInstance(): Prior to creating an instance')
 
         response = self.__openstack_compute_post_request(
             session, '/servers', create_server_request,
@@ -612,8 +605,7 @@ class Openstack(ResourceAdapter):
         """
 
         self.getLogger().debug(
-            '[openstack] __launchInstances(): Launching %d instance(s)' % (
-                nCount))
+            '__launchInstances(): Launching %d instance(s)' % (nCount))
 
         instances = {}
 
@@ -627,8 +619,7 @@ class Openstack(ResourceAdapter):
                     session, name=node.name, user_data=userData)
 
                 self.getLogger().debug(
-                    '[openstack] __launchInstances(): launch_resp=[%s]' % (
-                        launch_resp))
+                    '__launchInstances(): launch_resp=[%s]' % (launch_resp))
 
                 instances[launch_resp['id']] = dict(node=node)
 
@@ -641,8 +632,7 @@ class Openstack(ResourceAdapter):
                 session, user_data=userData)
 
             self.getLogger().debug(
-                '[openstack] __launchInstances(): launch_resp=[%s]' % (
-                    launch_resp))
+                '__launchInstances(): launch_resp=[%s]' % (launch_resp))
 
             instances[launch_resp['id']] = {}
 
@@ -655,7 +645,7 @@ class Openstack(ResourceAdapter):
         """
 
         self.getLogger().debug(
-            '[openstack] __getInstance(instance_id=[%s])' % (instance_id))
+            '__getInstance(instance_id=[%s])' % (instance_id))
 
         headers = {
             'Content-Type': 'application/json',
@@ -675,11 +665,11 @@ class Openstack(ResourceAdapter):
             errmsg = 'Timeout attempting to connect to [%s]' % (
                 '%s://%s' % (u.scheme, u.netloc))
 
-            self.getLogger().error('[openstack] ' + errmsg)
+            self.getLogger().error(errmsg)
 
             raise CommandFailed(errmsg)
 
-        # self.getLogger().debug('[openstack] ' + 'req.text=[%s]' % (req.text))
+        # self.getLogger().debug('req.text=[%s]' % (req.text))
 
         inst_dict = req.json()
 
@@ -690,7 +680,7 @@ class Openstack(ResourceAdapter):
         Returns a tuple of (completed, errored, unknown)
         """
 
-        self.getLogger().debug('[openstack] __waitForInstancesToLaunch()')
+        self.getLogger().debug('__waitForInstancesToLaunch()')
 
         workqueue = gevent.queue.JoinableQueue()
 
@@ -723,7 +713,7 @@ class Openstack(ResourceAdapter):
 
         if bTimedOut:
             self.getLogger().error(
-                '[openstack] Timeout starting instances (%d instance(s)'
+                'Timeout starting instances (%d instance(s)'
                 ' requested, %s instance(s) started successfully, %s'
                 ' instance(s) errored)' % (
                     nodeCount, len(list(completed.keys())), len(list(errored.keys()))))
@@ -766,7 +756,7 @@ class Openstack(ResourceAdapter):
         node = instance_req['node']
 
         self.getLogger().debug(
-            '[openstack] __post_launch_action(): node=[{0}]'.format(node.name))
+            '__post_launch_action(): node=[{0}]'.format(node.name))
 
     def __openstack_update_metadata(self, session, instance_id, metadata):
         data = {
@@ -779,7 +769,7 @@ class Openstack(ResourceAdapter):
 
     def __openstack_update_instance_attr(self, session, instance_id, attrs):
         self.getLogger().debug(
-            '[openstack] __openstack_update_instance_attr():'
+            '__openstack_update_instance_attr():'
             ' instance_id=[%s], attrs=[%s]' % (instance_id, attrs))
 
         postdata = {
@@ -853,14 +843,13 @@ class Openstack(ResourceAdapter):
                     node_instance_map[instance_id]['ip'] = floating_ip['ip']
 
                     self.getLogger().info(
-                        '[openstack] Associating floating IP [%s] with'
+                        'Associating floating IP [%s] with'
                         ' node [%s]' % (floating_ip['ip'], node.name))
 
             return node_instance_map
         except Exception:
             self.getLogger().exception(
-                '[openstack] An exception occurred while launching'
-                ' instance(s)')
+                'An exception occurred while launching instance(s)')
 
             # Determine unmapped floating ips for removal. Second argument
             # is a list of floating ips that have been mapped to nodes.
@@ -883,7 +872,7 @@ class Openstack(ResourceAdapter):
             ]
 
             self.getLogger().error(
-                '[openstack] Cleaning up node(s): %s' % (
+                'Cleaning up node(s): %s' % (
                     ' '.join([node.name for node in nodes_to_be_deleted])))
 
             # Terminate all instances. The current semantics dictate that
@@ -914,12 +903,12 @@ class Openstack(ResourceAdapter):
             OpenStackOperationFailed
         """
 
-        self.getLogger().debug('[openstack] __addActiveNodes()')
+        self.getLogger().debug('__addActiveNodes()')
 
         # Allocate floating ip address(es)
         if not session['config']['hosted_on_openstack']:
             self.getLogger().debug(
-                '[openstack] __addActiveNodes(): allocating floating ip'
+                '__addActiveNodes(): allocating floating ip'
                 ' address(es)')
 
             existing_floating_ips, allocated_floating_ips = \
@@ -931,7 +920,7 @@ class Openstack(ResourceAdapter):
 
         # Allocate node records
         self.getLogger().debug(
-            '[openstack] __addActiveNodes(): allocating node record(s)')
+            '__addActiveNodes(): allocating node record(s)')
 
         nodes = self.__createNodes(dbSession, addNodesRequest['count'],
                                    dbHardwareProfile, dbSoftwareProfile,
@@ -944,7 +933,7 @@ class Openstack(ResourceAdapter):
         if not session['config']['hosted_on_openstack']:
             # Associate floating ip(s) with node(s)
             self.getLogger().debug(
-                '[openstack] __addActiveNodes(): associating floating ip(s)'
+                '__addActiveNodes(): associating floating ip(s)'
                 ' with node(s)')
 
             for node_, floating_ip_ in zip(nodes, floating_ips):
@@ -952,15 +941,14 @@ class Openstack(ResourceAdapter):
 
         # Launch OpenStack instances
         self.getLogger().debug(
-            '[openstack] __addActiveNodes(): launching OpenStack instance(s)')
+            '__addActiveNodes(): launching OpenStack instance(s)')
 
         try:
             node_instance_map = self.__launchInstances(session, nodes=nodes)
         except OpenStackOperationFailed as exc:
             # Clean up any allocated floating ips
 
-            self.getLogger().debug(
-                '[openstack] error_detail: [%s]' % (exc.error_detail))
+            self.getLogger().debug('error_detail: [%s]' % (exc.error_detail))
 
             # Clean up any previously allocated floating ips
             self._release_floating_ips(session, allocated_floating_ips)
@@ -975,7 +963,7 @@ class Openstack(ResourceAdapter):
 
         # Wait for instances to launch
         self.getLogger().debug(
-            '[openstack] __addActiveNodes(): waiting for instance(s) to'
+            '__addActiveNodes(): waiting for instance(s) to'
             ' reach \'running\' state')
 
         instances_tuple = self.__waitForInstancesToLaunch(
@@ -985,7 +973,7 @@ class Openstack(ResourceAdapter):
         # successfully, abort the operation and clean up.
         if len(list(instances_tuple[0].keys())) != addNodesRequest['count']:
             self.getLogger().error(
-                '[openstack] error launching instance(s); cleaning up...')
+                'error launching instance(s); cleaning up...')
 
             self.__cleanup_failed_launch(
                 session, instances_tuple, allocated_floating_ips)
@@ -1075,7 +1063,7 @@ class Openstack(ResourceAdapter):
                          for floating_ip in allocated_floating_ips]
 
         self.getLogger().error(
-            '[openstack] Unable to start requested number of'
+            'Unable to start requested number of'
             ' instances. Cleaning up...')
 
         # Terminate any instances that reached "ACTIVE" state
@@ -1092,7 +1080,7 @@ class Openstack(ResourceAdapter):
         # TODO: clean up instances in "ERROR" state
         if errored_instances:
             self.getLogger().info(
-                '[openstack] Terminating instance(s) in error'
+                'Terminating instance(s) in error'
                 ' state: %s' % (' '.join(list(errored_instances.keys()))))
 
             # Errored instances need to be terminated as well,
@@ -1101,7 +1089,7 @@ class Openstack(ResourceAdapter):
             for instance_id, details in errored_instances.items():
                 if 'fault' in details:
                     self.getLogger().error(
-                        '[openstack] Error starting instance [%s]:'
+                        'Error starting instance [%s]:'
                         ' message=[%s], code=[%s]' % (
                             instance_id,
                             details['fault']['message'],
@@ -1114,7 +1102,7 @@ class Openstack(ResourceAdapter):
 
         if unknown_instances:
             self.getLogger().info(
-                '[openstack] Terminating instance(s) in unknown state:'
+                'Terminating instance(s) in unknown state:'
                 ' %s' % (' '.join(list(unknown_instances.keys()))))
 
             for instance_id in unknown_instances.keys():
@@ -1127,7 +1115,7 @@ class Openstack(ResourceAdapter):
             CommandFailed
         """
 
-        self.getLogger().debug('[openstack] __addIdleNodes()')
+        self.getLogger().debug('__addIdleNodes()')
 
         # TODO: validate IP only when not running on OpenStack
         # bValidateIp = True
@@ -1167,14 +1155,13 @@ class Openstack(ResourceAdapter):
                     addNodesRequest['resource_adapter_configuration']})
 
             self.getLogger().debug(
-                '[openstack] Created idle OpenStack node [%s]' % (
-                    node.name))
+                'Created idle OpenStack node [%s]' % (node.name))
 
         return added_nodes
 
     def __createNodes(self, dbSession, count, dbHardwareProfile,
                       dbSoftwareProfile, bGenerateIp=True):
-        self.getLogger().debug('[openstack] __createNodes()')
+        self.getLogger().debug('__createNodes()')
 
         nodeList = []
 
@@ -1207,7 +1194,7 @@ class Openstack(ResourceAdapter):
             CommandFailed
         """
 
-        self.getLogger().debug('[openstack] __requestOpenStackAuthToken()')
+        self.getLogger().debug('__requestOpenStackAuthToken()')
 
         payload = {
             'auth': {
@@ -1232,7 +1219,7 @@ class Openstack(ResourceAdapter):
         u = urllib.parse.urlparse(request_url)
 
         self.getLogger().debug(
-            '[openstack] Attempting to request auth token from [%s]' % (
+            'Attempting to request auth token from [%s]' % (
                 '%s://%s' % (u.scheme, u.netloc)))
 
         try:
@@ -1244,7 +1231,7 @@ class Openstack(ResourceAdapter):
             errmsg = 'Timeout attempting to connect to [%s]' % (
                 '%s://%s' % (u.scheme, u.netloc))
 
-            self.getLogger().error('[openstack] ' + errmsg)
+            self.getLogger().error(errmsg)
 
             raise CommandFailed(errmsg)
 
@@ -1255,20 +1242,19 @@ class Openstack(ResourceAdapter):
                 configDict['url'])
 
             self.getLogger().error(
-                '[openstack] ' + errmsg + '. Response=[%s]' % (
-                    response.text))
+                errmsg + '. Response=[%s]' % (response.text))
 
             raise CommandFailed(errmsg)
 
         response_json = response.json()
 
         self.getLogger().debug(
-            '[openstack] __requestOpenStackAuthToken(response=[%s])' % (
+            '__requestOpenStackAuthToken(response=[%s])' % (
                 pprint.pformat(response_json)))
 
         if 'access' not in response_json:
             self.getLogger().debug(
-                '[openstack] Unable to authenticate: %s' % (response_json))
+                'Unable to authenticate: %s' % (response_json))
 
             raise CommandFailed(
                 'Unable to authenticate: %s' % (response_json))
@@ -1295,14 +1281,14 @@ class Openstack(ResourceAdapter):
                     service['endpoints'], configDict['region'])
 
                 self.getLogger().debug(
-                    '[openstack] __requestOpenStackAuthToken():'
-                    ' endpoint=[%s]' % (endpoint))
+                    '__requestOpenStackAuthToken(): endpoint=[%s]' % (
+                        endpoint))
 
                 network_url = endpoint['publicURL']
 
                 self.getLogger().debug(
-                    '[openstack] __requestOpenStackAuthToken():'
-                    ' network_url=[%s]' % (network_url))
+                    '__requestOpenStackAuthToken(): network_url=[%s]' % (
+                        network_url))
 
             if compute_url and network_url:
                 break
@@ -1314,7 +1300,7 @@ class Openstack(ResourceAdapter):
 
             errmsg = 'Unable to determine service endpoint(s): %s' % (err)
 
-            self.getLogger().error('[openstack] ' + errmsg)
+            self.getLogger().error(errmsg)
 
             raise CommandFailed(errmsg)
 
@@ -1332,7 +1318,7 @@ class Openstack(ResourceAdapter):
         """
 
         self.getLogger().debug(
-            '[openstack] __initSession(swProfile=[%s], hwProfile=[%s])' % (
+            '__initSession(swProfile=[%s], hwProfile=[%s])' % (
                 swProfile.name if swProfile else 'None', hwProfile.name))
 
         configSection = hwProfile.name
@@ -1350,7 +1336,7 @@ class Openstack(ResourceAdapter):
             CommandFailed
         """
 
-        self.getLogger().debug('[openstack] __renewSession()')
+        self.getLogger().debug('__renewSession()')
 
         configDict = self.getResourceAdapterConfig(
             sectionName=session['config']['sectionName'])
@@ -1363,7 +1349,7 @@ class Openstack(ResourceAdapter):
 
     def __closeSession(self, session): \
             # pylint: disable=unused-argument
-        self.getLogger().debug('[openstack] __closeSession()')
+        self.getLogger().debug('__closeSession()')
 
         # TODO
 
@@ -1378,8 +1364,7 @@ class Openstack(ResourceAdapter):
         '''
 
         self.getLogger().debug(
-            '[openstack] getResourceAdapterConfig(sectionName=[%s])' % (
-                sectionName))
+            'getResourceAdapterConfig(sectionName=[%s])' % (sectionName))
 
         configDict = super(Openstack, self).getResourceAdapterConfig(
             sectionName=sectionName)
@@ -1434,7 +1419,7 @@ class Openstack(ResourceAdapter):
                 errmsg = ('Configuration item \'hosted_on_openstack\''
                           ' *must* be specified when using RackSpace')
 
-                self.getLogger().error('[openstack] ' + errmsg)
+                self.getLogger().error(errmsg)
 
                 raise ConfigurationError(errmsg)
 
@@ -1472,7 +1457,7 @@ class Openstack(ResourceAdapter):
                           mandatory_values - configured_values -
                           optional_values)))
 
-            self.getLogger().error('[openstack] ' + errmsg)
+            self.getLogger().error(errmsg)
 
             raise ConfigurationError(errmsg)
 
@@ -1484,7 +1469,7 @@ class Openstack(ResourceAdapter):
         # is logged, which may indicate typos or incorrect option names
         if accepted_values - set(configDict.keys()):
             self.getLogger().info(
-                '[openstack] The following configuration items are'
+                'The following configuration items are'
                 ' invalid: [%s]' % (' '.join(list(
                     accepted_values - set(configDict.keys())))))
 
@@ -1529,17 +1514,16 @@ class Openstack(ResourceAdapter):
                     'image or image_id must be specified')
 
         self.getLogger().debug(
-            '[openstack] getResourceAdapterConfig(): configDict=[%s]' % (
-                configDict))
+            'getResourceAdapterConfig(): configDict=[%s]' % (configDict))
 
         return configDict
 
     def __getUserData(self, configDict, node):
-        self.getLogger().debug('[openstack] __getUserData()')
+        self.getLogger().debug('__getUserData()')
 
         if 'user_data_script_template' not in configDict:
             self.getLogger().warn(
-                '[openstack] User data script template does not exist.'
+                'User data script template does not exist.'
                 ' Instances will be started without user data')
 
             if node:
@@ -1561,7 +1545,7 @@ class Openstack(ResourceAdapter):
         if 'user_data_script_template' in configDict and \
                 not os.path.exists(configDict['user_data_script_template']):
             self.getLogger().warn(
-                '[openstack] User data script template [%s] does not'
+                'User data script template [%s] does not'
                 ' exist. Instances will be started without user data' % (
                     configDict['user_data_script_template']))
 
@@ -1601,7 +1585,7 @@ cfmPassword = '%(cfmpassword)s'
     def start(self, addNodesRequest, dbSession, dbHardwareProfile,
               dbSoftwareProfile=None):
         self.getLogger().debug(
-            '[openstack] start(addNodeRequest=[%s], dbSession=[%s],'
+            'start(addNodeRequest=[%s], dbSession=[%s],'
             ' dbHardwareProfile=[%s], dbSoftwareProfile=[%s])' % (
                 addNodesRequest, dbSession, dbHardwareProfile,
                 dbSoftwareProfile))
@@ -1654,7 +1638,7 @@ cfmPassword = '%(cfmpassword)s'
         """
 
         self.getLogger().debug(
-            '[openstack] activateIdleNode(node=[%s],'
+            'activateIdleNode(node=[%s],'
             ' softwareProfileName=[%s], softwareProfileChanged=[%s])' % (
                 node.name, softwareProfileName, softwareProfileChanged))
 
@@ -1712,12 +1696,12 @@ cfmPassword = '%(cfmpassword)s'
             excmsg = ('An exception occurred attempting to activate node'
                       ' [%s]' % (node.name))
 
-            self.getLogger().error('[openstack] ' + excmsg)
+            self.getLogger().error(excmsg)
 
             self.getLogger().exception(ex)
 
             self.getLogger().info(
-                '[openstack] Terminating instance [%s] associated with'
+                'Terminating instance [%s] associated with'
                 ' node [%s]' % (instance_id, node.name))
 
             self.__terminateInstance(session, instance_id)
@@ -1731,8 +1715,7 @@ cfmPassword = '%(cfmpassword)s'
         '''Transfer the given idle node'''
 
         for node, oldSoftwareProfileName in nodeIdSoftwareProfileTuples:
-            self.getLogger().debug(
-                '[openstack] transferNode (node=[%s])' % (node.name))
+            self.getLogger().debug('transferNode (node=[%s])' % (node.name))
 
             # simply idle and activate
             self.idleActiveNode([node])
@@ -1771,7 +1754,7 @@ cfmPassword = '%(cfmpassword)s'
                 errmsg = 'Timeout attempting to connect to [%s]' % (
                     '%s://%s' % (u.scheme, u.netloc))
 
-                self.getLogger().error('[openstack] ' + errmsg)
+                self.getLogger().error(errmsg)
 
                 raise CommandFailed(errmsg)
 
@@ -1791,7 +1774,7 @@ cfmPassword = '%(cfmpassword)s'
         else:
             errmsg = 'Delete instance request retry limit exceeded'
 
-            self.getLogger().error('[openstack] ' + errmsg)
+            self.getLogger().error(errmsg)
 
             raise CommandFailed(errmsg)
 
@@ -1799,8 +1782,7 @@ cfmPassword = '%(cfmpassword)s'
 
     def __terminateInstance(self, session, instance_id):
         self.getLogger().debug(
-            '[openstack] __terminateInstance(instance_id=[%s])' % (
-                instance_id))
+            '__terminateInstance(instance_id=[%s])' % (instance_id))
 
         response = self.__openstack_compute_delete_request(
             session, '/servers/%s' % (instance_id), expected_status=(204,))
@@ -1808,7 +1790,7 @@ cfmPassword = '%(cfmpassword)s'
         if response.status_code == 404:
             errmsg = 'Instance [%s] not found' % (instance_id)
 
-            self.getLogger().warn('[openstack] ' + errmsg)
+            self.getLogger().warn(errmsg)
 
     def __openstack_remove_floating_ip(self, session, instance_id,
                                        floating_ip):
@@ -1818,7 +1800,7 @@ cfmPassword = '%(cfmpassword)s'
         """
 
         self.getLogger().debug(
-            '[openstack] __openstack_remove_floating_ip():'
+            '__openstack_remove_floating_ip():'
             ' instance_id=[%s], floating_ip=[%s]' % (
                 instance_id, floating_ip))
 
@@ -1838,7 +1820,7 @@ cfmPassword = '%(cfmpassword)s'
         """
 
         self.getLogger().debug(
-            '[openstack] __openstack_release_floating_ip():'
+            '__openstack_release_floating_ip():'
             ' floating_ip_id=[%s]' % (floating_ip_id))
 
         response = self.__openstack_compute_delete_request(
@@ -1847,12 +1829,12 @@ cfmPassword = '%(cfmpassword)s'
 
         if response.status_code == 404:
             self.getLogger().info(
-                '[openstack] Unable to deallocate floating IP [%s];'
+                'Unable to deallocate floating IP [%s];'
                 ' not found' % (floating_ip_id))
 
     def __openstack_release_floating_ip_by_ip(self, session, ip):
         self.getLogger().debug(
-            '[openstack] __openstack_release_floating_ip_by_ip():'
+            '__openstack_release_floating_ip_by_ip():'
             ' ip=[%s]' % (ip))
 
         # Get list of all floating IPs
@@ -1865,8 +1847,7 @@ cfmPassword = '%(cfmpassword)s'
                 break
         else:
             self.getLogger().info(
-                '[openstack] Floating IP [%s] has been previously'
-                ' deallocated' % (ip))
+                'Floating IP [%s] has been previously deallocated' % (ip))
 
             return
 
@@ -1880,16 +1861,15 @@ cfmPassword = '%(cfmpassword)s'
         Get list of all floating IP addresses
         """
 
-        self.getLogger().debug(
-            '[openstack] __openstack_get_floating_ip_list()')
+        self.getLogger().debug('__openstack_get_floating_ip_list()')
 
         response = self.__openstack_compute_get_request(
             session, '/os-floating-ips', expected_status=(200,))
 
         if 'floating_ips' not in response:
             self.getLogger().debug(
-                '[openstack] __openstack_get_floating_ip_list():'
-                ' response=[%s]' % (response))
+                '__openstack_get_floating_ip_list(): response=[%s]' % (
+                    response))
 
             raise CommandFailed('Unable to get list of floating IPs')
 
@@ -1901,7 +1881,7 @@ cfmPassword = '%(cfmpassword)s'
         """
 
         self.getLogger().debug(
-            '[openstack] __openstack_get_floating_ip_for_instance():'
+            '__openstack_get_floating_ip_for_instance():'
             ' instance_id=[%s]' % (instance_id))
 
         floating_ips = self.__openstack_get_floating_ip_list(session)
@@ -1916,8 +1896,7 @@ cfmPassword = '%(cfmpassword)s'
 
     def deleteNode(self, dbNodes):
         for node in dbNodes:
-            self.getLogger().debug(
-                '[openstack] deleteNode(): node=[%s]' % (node.name))
+            self.getLogger().debug('deleteNode(): node=[%s]' % (node.name))
 
             try:
                 configDict = self.getResourceAdapterConfig(
@@ -1934,12 +1913,11 @@ cfmPassword = '%(cfmpassword)s'
                     self.__terminateActive(session, node)
             except (ConfigurationError, ResourceNotFound):
                 self.getLogger().debug(
-                    '[openstack] Configuration for specified node does'
+                    'Configuration for specified node does'
                     ' not exist; node may still be running in OpenStack')
 
     def __terminateIdle(self, session, node):
-        self.getLogger().debug(
-            '[openstack] __terminateIdle(node=[%s])' % (node.name))
+        self.getLogger().debug('__terminateIdle(node=[%s])' % (node.name))
 
     def __terminateActive(self, session, node):
         """
@@ -1947,8 +1925,7 @@ cfmPassword = '%(cfmpassword)s'
             TBD
         """
 
-        self.getLogger().debug(
-            '[openstack] __terminateActive(): node=[%s]' % (node.name))
+        self.getLogger().debug('__terminateActive(): node=[%s]' % (node.name))
 
         # Get instance id from instance cache
         node_instance = self.instanceCacheGet(node.name)
@@ -1956,8 +1933,7 @@ cfmPassword = '%(cfmpassword)s'
         if 'instance' not in node_instance or \
                 node_instance['instance'] is None:
             self.getLogger().warn(
-                '[openstack] Node [%s] does not have an associated'
-                ' instance' % (node.name))
+                'Node [%s] does not have an associated instance' % (node.name))
 
             return
 
@@ -1982,7 +1958,7 @@ cfmPassword = '%(cfmpassword)s'
         }
 
         self.getLogger().debug(
-            '[openstack] __openstack_add_floating_ip_to_instance():'
+            '__openstack_add_floating_ip_to_instance():'
             ' instance_id=[%s], ip=[%s]' % (instance_id, ip))
 
         # TODO: this should raise an exception if it failed
@@ -1990,7 +1966,7 @@ cfmPassword = '%(cfmpassword)s'
             session, url, payload, expected_status=(202,))
 
         self.getLogger().debug(
-            '[openstack] __openstack_add_floating_ip_to_instance():'
+            '__openstack_add_floating_ip_to_instance():'
             ' response=[%s]' % (response))
 
     def _get_allocated_floating_ips(self, session):
@@ -2041,8 +2017,7 @@ cfmPassword = '%(cfmpassword)s'
         except CommandFailed:
             # Unable to allocate requested number of floating IPs
 
-            self.getLogger().info(
-                '[openstack] Deallocating unused floating IPs')
+            self.getLogger().info('Deallocating unused floating IPs')
 
             # Clean up allocated floating ips
             self._release_floating_ips(session, allocated_floating_ips)
@@ -2067,7 +2042,7 @@ cfmPassword = '%(cfmpassword)s'
 
     def _release_floating_ips(self, session, floating_ips):
         self.getLogger().info(
-            '[openstack] Releasing floating IPs: [{0}]'.format(
+            'Releasing floating IPs: [{0}]'.format(
                 [floating_ip['ip'] for floating_ip in floating_ips]))
 
         # Lock 'session_floating_ips' list prior to removing all floating
@@ -2100,8 +2075,7 @@ cfmPassword = '%(cfmpassword)s'
         """
 
         for node in dbNodes:
-            self.getLogger().debug(
-                '[openstack] idleActiveNode(): node=[%s]' % (node.name))
+            self.getLogger().debug('idleActiveNode(): node=[%s]' % (node.name))
 
             configDict = self.getResourceAdapterConfig(
                 self.getResourceAdapterConfigProfileByNodeName(node.name))
@@ -2158,8 +2132,7 @@ cfmPassword = '%(cfmpassword)s'
             errmsg = 'Unable to determine if hosted on OpenStack.'
 
             self.getLogger().error(
-                '[openstack] ' + errmsg +
-                ': JSON parse error on facter output')
+                errmsg + ': JSON parse error on facter output')
 
             raise CommandFailed(
                 errmsg +
@@ -2169,7 +2142,7 @@ cfmPassword = '%(cfmpassword)s'
 
         if retval != 0:
             self.getLogger().error(
-                '[openstack] \'facter\' failed; unable to determine'
+                '\'facter\' failed; unable to determine'
                 ' if hosted on OpenStack.')
 
             raise CommandFailed(
@@ -2179,7 +2152,7 @@ cfmPassword = '%(cfmpassword)s'
             errmsg = ('Unable to determine if hosted on OpenStack.'
                       ' Use \'hosted_on_openstack\' configuration option')
 
-            self.getLogger().error('[openstack] ' + errmsg)
+            self.getLogger().error(errmsg)
 
             raise CommandFailed(errmsg)
 
