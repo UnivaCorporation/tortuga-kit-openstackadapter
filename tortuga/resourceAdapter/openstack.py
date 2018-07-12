@@ -34,8 +34,8 @@ from tortuga.exceptions.commandFailed import CommandFailed
 from tortuga.exceptions.configurationError import ConfigurationError
 from tortuga.os_utility import osUtility
 from tortuga.exceptions.invalidArgument import InvalidArgument
-from tortuga.db.nics import Nics
-from tortuga.db.nodes import Nodes
+from tortuga.db.models.nic import Nic
+from tortuga.db.models.node import Node
 from tortuga.utility.cloudinit import dump_cloud_config_yaml
 from tortuga.resourceAdapter.utility import get_provisioning_nic
 from tortuga.exceptions.resourceNotFound import ResourceNotFound
@@ -895,7 +895,7 @@ class Openstack(ResourceAdapter):
             raise
 
     def __init_new_node(self, dbHardwareProfile, dbSoftwareProfile):
-        node = Nodes()
+        node = Node()
         node.hardwareprofile = dbHardwareProfile
         node.hardwareProfileId = dbHardwareProfile.id
         node.softwareprofile = dbSoftwareProfile
@@ -948,7 +948,7 @@ class Openstack(ResourceAdapter):
                 ' with node(s)')
 
             for node_, floating_ip_ in zip(nodes, floating_ips):
-                node_.nics.append(Nics(ip=floating_ip_['ip'], boot=True))
+                node_.nics.append(Nic(ip=floating_ip_['ip'], boot=True))
 
         # Launch OpenStack instances
         self.getLogger().debug(
@@ -1025,7 +1025,7 @@ class Openstack(ResourceAdapter):
 
                     ip = str(intfc['addr'])
 
-                    node_instance['node'].nics = [Nics(boot=True, ip=ip)]
+                    node_instance['node'].nics = [Nic(boot=True, ip=ip)]
 
                 node_instance['node'].state = 'Provisioned'
 
@@ -1705,7 +1705,7 @@ cfmPassword = '%(cfmpassword)s'
                 if node.nics:
                     node.nics[0].ip = ip
                 else:
-                    node.nics.append(Nics(ip=ip))
+                    node.nics.append(Nic(ip=ip))
 
             node.state = 'Provisioned'
         except Exception as ex:
