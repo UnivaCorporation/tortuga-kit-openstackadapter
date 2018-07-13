@@ -39,6 +39,7 @@ from tortuga.exceptions.resourceNotFound import ResourceNotFound
 from tortuga.os_utility import osUtility
 from tortuga.resourceAdapter.resourceAdapter import ResourceAdapter
 from tortuga.resourceAdapter.utility import get_provisioning_nic
+from tortuga.resourceAdapterConfiguration import settings
 from tortuga.utility.cloudinit import dump_cloud_config_yaml
 
 
@@ -70,6 +71,49 @@ class Openstack(ResourceAdapter):
     DEFAULT_SLEEP_TIME = 5
 
     DEFAULT_NETWORK_TIMEOUT = 120
+
+    settings = {
+        'username': settings.StringSetting(
+            required=True,
+            description='OpenStack user name',
+        ),
+        'password': settings.StringSetting(
+            secret=True,
+            description='OpenStack password',
+        ),
+        'tenant_id': settings.StringSetting(
+            required=True,
+            description='OpenStack tenant (project) name',
+        ),
+        'keypair': settings.StringSetting(
+            required=True,
+            description='Key pair name',
+        ),
+        'url': settings.StringSetting(
+            required=True,
+            description='URL of OpenStack Keystone identity service',
+        ),
+        'flavor': settings.StringSetting(
+            required=True,
+            description='Instance flavor',
+        ),
+        'image_id': settings.StringSetting(
+            required=True,
+            description='Image id',
+        ),
+        'user_data_script_template': settings.FileSetting(
+            description='Path to user data template script',
+            mutually_exclusive=['cloud_init_script_template'],
+            base_path='/opt/tortuga/config/',
+            overrides=['cloud_init_script_template']
+        ),
+        'cloud_init_script_template': settings.FileSetting(
+            description='Path to cloud init script',
+            mutually_exclusive=['user_data_script_template'],
+            base_path='/opt/tortuga/config/',
+            overrides=['user_data_script_template']
+        ),
+    }
 
     def __init__(self, addHostSession=None):
         super(Openstack, self).__init__(addHostSession=addHostSession)
