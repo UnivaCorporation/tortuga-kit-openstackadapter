@@ -1261,11 +1261,8 @@ class Openstack(ResourceAdapter):
 
         request_url = configDict['url'] + '/tokens'
 
-        u = urllib.parse.urlparse(request_url)
-
         self.getLogger().debug(
-            'Attempting to request auth token from [%s]' % (
-                '%s://%s' % (u.scheme, u.netloc)))
+            'Attempting to request auth token from [%s]', configDict['url'])
 
         try:
             response = requests.post(
@@ -1274,7 +1271,7 @@ class Openstack(ResourceAdapter):
                 headers=headers, timeout=configDict['networktimeout'])
         except Timeout:
             errmsg = 'Timeout attempting to connect to [%s]' % (
-                '%s://%s' % (u.scheme, u.netloc))
+                configDict['url'])
 
             self.getLogger().error(errmsg)
 
