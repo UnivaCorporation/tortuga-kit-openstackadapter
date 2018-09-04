@@ -25,10 +25,11 @@ import threading
 import urllib.parse
 import uuid
 
-import gevent
-import gevent.queue
 import requests
 from requests.exceptions import Timeout
+
+import gevent
+import gevent.queue
 from tortuga.db.models.nic import Nic
 from tortuga.db.models.node import Node
 from tortuga.exceptions.commandFailed import CommandFailed
