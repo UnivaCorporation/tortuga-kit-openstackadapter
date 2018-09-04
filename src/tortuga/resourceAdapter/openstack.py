@@ -36,7 +36,6 @@ from tortuga.exceptions.configurationError import ConfigurationError
 from tortuga.exceptions.invalidArgument import InvalidArgument
 from tortuga.exceptions.nicNotFound import NicNotFound
 from tortuga.exceptions.resourceNotFound import ResourceNotFound
-from tortuga.os_utility import osUtility
 from tortuga.resourceAdapter.resourceAdapter import ResourceAdapter
 from tortuga.resourceAdapter.utility import get_provisioning_nic
 from tortuga.resourceAdapterConfiguration import settings
@@ -1569,9 +1568,7 @@ class Openstack(ResourceAdapter):
                 ' Instances will be started without user data')
 
             if node:
-                bhm = osUtility.getOsObjectFactory().getOsBootHostManager()
-
-                user_data = bhm.get_cloud_config(node)
+                user_data = self._bhm.get_cloud_config(node)
 
                 if not user_data:
                     return None
@@ -1986,8 +1983,7 @@ cfmPassword = '%(cfmpassword)s'
         # Update the instance cache
         self.instanceCacheDelete(node.name)
 
-        bhm = osUtility.getOsObjectFactory().getOsBootHostManager()
-        bhm.deleteNodeCleanup(node)
+        self._bhm.deleteNodeCleanup(node)
 
     def __openstack_add_floating_ip_to_instance(self, session, instance_id,
                                                 ip):
@@ -2144,8 +2140,7 @@ cfmPassword = '%(cfmpassword)s'
             node.nics[0].ip = None
 
             # Remove Puppet certificate for idled node
-            bhm = osUtility.getOsObjectFactory().getOsBootHostManager()
-            bhm.deletePuppetNodeCert(node.name)
+            self._bhm.deletePuppetNodeCert(node.name)
 
         return 'Discovered'
 
