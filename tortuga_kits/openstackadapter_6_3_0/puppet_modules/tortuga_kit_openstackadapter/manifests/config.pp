@@ -13,5 +13,5 @@
 # limitations under the License.
 
 
-class rotuga_kit_openstackadapter::config inherits rotuga_kit_openstackadapter::params {
+class tortuga_kit_openstackadapter::config inherits tortuga_kit_openstackadapter::params {
 }

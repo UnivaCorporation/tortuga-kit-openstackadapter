@@ -19,10 +19,11 @@ setup(
     name='tortuga-openstack-adapter',
     version='6.3.0',
     url='http://univa.com',
-    author='Univa Corp',
-    author_email='info@univa.com',
-    license='Commercial',
-    packages=find_packages(exclude=['tortuga_kits']),
+    author='Univa Corporation',
+    author_email='support@univa.com',
+    license='Apache 2.0',
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
     namespace_packages=[
         'tortuga',
         'tortuga.resourceAdapter'
